@@ -14,8 +14,9 @@ error_log(print_r($_POST, TRUE));
 		$user = $custom[0];
 		$idplan = intval($custom[1]);
 		$payement_amount = $_POST['mc_fee'];
-		$payment_currency = $_POST['mc_currency']; 
-		$expire = "DATE_ADD(NOW(), new DateInterval('P1M'))"; 
+		$payment_currency = $_POST['mc_currency'];
+		$date = new DateTime("Y-m-d H:i:s");
+		$date -> add(new DateInterval('P1M'));
 	
 	//CONNECT DB
 	$db = new PDO("mysql:host=HOST;dbname=DBNAME","USER","PASS");
