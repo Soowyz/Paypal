@@ -27,3 +27,35 @@ error_log(print_r($_POST, TRUE));
 // Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
  header("HTTP/1.1 200 OK");
 ?>
+
+######################################################################
+
+<?php 
+require('PaypalIPN.php');
+use PaypalIPN;
+$ipn = new PaypalIPN();
+// Use the sandbox endpoint during testing.
+$ipn->useSandbox();
+$verified = $ipn->verifyIPN();
+if ($verified) {
+    $txn_id = $_POST['txn_id'];
+	$payer_email = $_POST['payer_email'];
+	$item_name = $_POST['item_name'];
+	$user = $_POST['custom'];
+	$payement_amount = $_POST['mc_gross'];
+	//CONNECT DB
+	$db = new PDO("mysql:host=HOST;dbname=DBNAME","USER","PASS");
+		//Historique de commandes			
+			$req = $db->query('SELECT * FROM plans WHERE price='.$payement_amount.' LIMIT 1');
+			$d = $req->fetch(PDO::FETCH_ASSOC);
+			if(!empty($d)){
+				$idplan = $d['ID'];
+			$db->query("UPDATE users SET expire=DATE_ADD(NOW(), INTERVAL 1 MONTH), membership='$idplan' WHERE username = '$user'");
+			$db->query("INSERT INTO pay (user,id,email,pack) VALUES('$user','$txn_id','$payer_email','$item_name')");
+			}else{
+			
+			}
+}
+// Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
+header("HTTP/1.1 200 OK");
+?>
