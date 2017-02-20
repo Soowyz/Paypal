@@ -21,17 +21,17 @@ error_log(print_r($_POST, TRUE));
 	
 	//CONNECT DB
 	$db = new PDO("mysql:host=HOST;dbname=DBNAME","USER","PASS");
+	$req = $db->prepare("UPDATE users SET expire=':expire', membership=':membership' WHERE username=':user'");
+				$req->execute(array(":expire" => $expire,
+						":membership" => $idplan,
+						":user" => $user));
+
 				$stmt = $db->prepare("INSERT INTO pay (user,id,email,pack) VALUES(:user, :txn_id, :payer_email, :item_name)");
 				$stmt->bindParam(':user', $user);
 				$stmt->bindParam(':txn_id', $txn_id);
 				$stmt->bindParam(':payer_email', $payer_email);
 				$stmt->bindParam(':item_name', $item_name);
 				$stmt->execute();
-
-	$req = $db->prepare("UPDATE users SET expire=':expire', membership=':membership' WHERE username=':user'");
-				$req=>execute(array(":expire" -> $expire,
-						    ":membership" -> $idplan,
-						    ":user" -> $user));
 // Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
  header("HTTP/1.1 200 OK");
 ?>
