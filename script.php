@@ -15,8 +15,8 @@ error_log(print_r($_POST, TRUE));
 		$idplan = intval($custom[1]);
 		$payement_amount = $_POST['mc_fee'];
 		$payment_currency = $_POST['mc_currency'];
-		$date = new DateTime("Y-m-d H:i:s");
-		$date -> add(new DateInterval('P1M'));
+		$expire = new DateTime("Y-m-d H:i:s");
+		$expire -> add(new DateInterval('P1M'));
 	
 	//CONNECT DB
 	$db = new PDO("mysql:host=HOST;dbname=DBNAME","USER","PASS");
@@ -28,7 +28,7 @@ error_log(print_r($_POST, TRUE));
 				$stmt->execute();
 
 	$req = $db->prepare("UPDATE users SET expire=':expire', membership=':membership' WHERE username=':user'");
-				$req->execute(array(":expire" -> $date,
+				$req->execute(array(":expire" -> $expire,
 						    ":membership" -> $idplan,
 						    ":user" -> $user));
 
