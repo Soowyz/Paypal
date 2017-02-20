@@ -23,6 +23,10 @@ error_log(print_r($_POST, TRUE));
 				$stmt->bindParam(':item_name', $item_name);
 				$stmt->execute();
 
+	$req = $db->prepare("UPDATE users SET expire=':expire', membership=':membership' WHERE username='$user'");
+				$req->execute(array(":expire" -> 'DATE_ADD(NOW(), new DateInterval('P1M'))',
+						    "membership" -> $idplan));
+
 
 // Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
  header("HTTP/1.1 200 OK");
